@@ -1,194 +1,142 @@
 const url = "https://2u-data-curriculum-team.s3.amazonaws.com/dataviz-classroom/v1.1/14-Interactive-Web-Visualizations/02-Homework/samples.json";
 
-challenge_data = d3.json(url)
-console.log(challenge_data)
-
-challenge_data = d3.json(url).then(function(s) {
-    let s_id = s.samples.map(s => s.id);
-    let s_otuid = s.samples.map(s => s.otu_ids);
-    let s_sv = s.samples.map(s => s.sample_values);
-    console.log(s_id) // this is calling the whole thing when not mapped
-})
-
-                    // four functions? relatively simple? need xxx => xxx somewhere with d3...
-                    //      function build metaData, 
-                    //      function build charts, 
-                    //      function init, 
-                    //      function option change
-                    //      d3.json ... => {let... , let..., let... , etc.}
-
-function metaData() {
-
-// .sample-metadata
-// keys-values?
-
-challenge_data = d3.json(url).then(function(m) {
-    let m_id = m.metadata.map(m => m.id);
-    let m_ethnicity = m.metadata.map(m => m.ethnicity);
-    let m_gender = m.metadata.map(m => m.gender);
-    let m_age = m.metadata.map(m => m.age);
-    let m_location = m.metadata.map(m => m.location);
-    let m_bbtype = m.metadata.map(m => m.bbtype); // (str)
-    let m_wfreq = m.metadata.map(m => m.wfreq); // (int)
-            // console.log(m_id); // this is calling just the ids
-            // console.log(m_ethnicity);
-            // console.log(m_gender);
-            // console.log(m_age);
-            // console.log(m_location);
-            // console.log(m_bbtype);
-            // console.log(m_wfreq)
-    // d3.select(".sample-metadata")
-    // "id: " : m_id[xxx];
-    // "ethnicity: " : m_ethnicity[xxx];
-    // "gender: " : m_gender[xxx];
-    // "age: " : m_age[xxx];
-    // "location: " : m_location[xxx];
-    // "bbtype: " : m_bbtype[xxx];
-    // "wfreq: " : m_wfreq[xxx]
-
-    // let xxx = Object.values(m.xxx[ggg]);
-    // let xxx = Object.keys(m.xxx[ggg]);
-
-})};
-
-// function chart() {  // UNCOMMENT HERE!!
-
-    // d3.select("#bar");
-    // d3.select("#bubble");
-
-//     let sortedData = s_sv.sort((a, b) => b.s_sv - a.s_sv);
-//     let slicedData = sortedData.slice(0, 10);
-//     slicedData.reverse();
-
-//     let trace1 = {
-        // x: slicedData.map(s_sv[1]), // object => object.
-        // y: slicedData.map(s_otuid[1]), // object => object.
-        //   text: slicedData.map(object => object.greekName),
-        //   name: "Greek", // prob del
-        // hovertext: xxx,
-        
-//     };
-
-//     // Data array
-//     let data = [trace1];
-
-//     // Render the plot to the div tag with id "plot"
-//     Plotly.newPlot("bar", data);
-
-// }
-// for the hbar graph
-//    2. Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual.
-//        Use sample_values as the values for the bar chart.
-//        Use otu_ids as the labels for the bar chart.
-//        Use otu_labels as the hovertext for the chart.
-
 function init() {   // this is the dropdown function, just need the dropdown here and store? the result and output that to chart and bubble and demo
 
-//     let dropdown = d3.select("#selDataset"); // per TA mark
-//     let selection = dropdown.property("value");
-//     let output = [{
-//         values: s_sv[0],
-//         labels: s_otuid[0],
-//         // hovertext: "text",  // s_otulabels, need to create
-//         type: "bar",
-//         orientation: "h"
-// }]
-// };
-    let dropdown = d3.select("#selDataset").html;
     d3.json(url).then((data) => {
         let subject_id = data.names;
-        for (let i = 0; i < subject_id.length; i++){
+        let dropdown = d3.select("#selDataset");
+
+        for (let i = 0; i < subject_id.length; i++){   // .forEach per TA Paveen? shorter version of what is here...
         dropdown
             .append("option")
             .text(subject_id[i])
             .property("value", subject_id[i])
-        // let selection = dropdown.value;
-        };
-    });
+        }
+    console.log(subject_id[0])
+        metaData(subject_id[0])   // callilng function below with subject_id[0]
+        chart(subject_id[0])            
+        
+    //     let meta_info = d3.select("#sample-metadata");
+
+    //         d3.json(url).then(function(m) {          // anytime you use d3.json in it shouldn't be set to a variable bc then the data isn't available outside of that variable
+    //         let m_id = m.metadata.map(m => m.id);
+    //         let m_ethnicity = m.metadata.map(m => m.ethnicity);
+
+        // let bubble_chart = d3.select("#bubble");
+        // console.log(meta_data)
+        // });
+    })};
+
+    init (); // calling function init, allows you to call if it needed
+
+    challenge_data = d3.json(url)
+    console.log(challenge_data)
+
+function optionChanged(new_id) {
+    // d3.selectAll("#selDataset").on("change", updatePlotly) // updatePlotly here is calling the function which we don't have
+    chart(new_id)
+    metaData(new_id)
 };
 
-init ();
+//                         // <select id="selDataset" onchange="optionChanged(this.value)"></select> WHERE DOES THIS GO? HOW TO IMPLEMENT?
+//                         // use a .filter somewhere for id, etc.?
 
+function metaData(new_id) {
 
-// Initializes the page with a default plot
-// function init() {
-//     data = [{
-//       x: [1, 2, 3, 4, 5],
-//       y: [1, 2, 4, 8, 16] }];
-  
-//     Plotly.newPlot("plot", data);
-//   }
-  
-  
-//     // Initialize x and y arrays
-//     let x = [];
-//     let y = [];
-  
-//     if (dataset === 'dataset1') {
-//       x = [1, 2, 3, 4, 5];
-//       y = [1, 2, 4, 8, 16];
-//     }
-  
-//     else if (dataset === 'dataset2') {
-//       x = [10, 20, 30, 40, 50];
-//       y = [1, 10, 100, 1000, 10000];
-//     }
-  
-//     // Note the extra brackets around 'x' and 'y'
-//     Plotly.restyle("plot", "x", [x]);
-//     Plotly.restyle("plot", "y", [y]);
-//   }  
+    d3.json(url).then((data) => {
+        let data_meta = data.metadata;
+        let results_meta = data_meta.filter(data_meta => data_meta.id == new_id);  // filters by id, but still shows everything...
+        let meta_pull = results_meta[0];
 
-// init();
+        let metaText = d3.select("#sample-metadata");
 
+        metaText.html("")  // empties out upon change in id, code below is help from LA sunshine
+        for (key in meta_pull){
+            metaText
+                .append("h6")   // size of text, but what is the actual syntax or parameter that goes in here?
+                .text(`${key.toLowerCase()}: ${meta_pull[key]}`);   // how to access a dictionary and iterate through it
+          };
+        });
+    };
 
-// function change() // UNCOMMENT HERE!!
+function chart(new_id) {
 
-//   d3.selectAll("#selDataset").on("change", updatePlotly);
-  
-//   // This function is called when a dropdown menu item is selected
-//   function updatePlotly() {
-//     // Use D3 to select the dropdown menu
-//     let dropdown = d3.select("#selDataset");
-//     // Assign the value of the dropdown menu option to a variable
-//     let dataset = dropdown.property("value");
+    // use the .find to grab info with id
+    // const desiredObject = myArray.find(item => item.id === 2);
 
+    let bar_chart = d3.select("#bar");
+    d3.json(url).then((data) => {
+        let raw_data = data.samples;
+        let interestArray = raw_data.filter(new_idObj => new_idObj.id == new_id);
+        let interest = interestArray[0];
 
-// test subject id no in dropdown
-// d3.select("#selDataset").html
+        let sample_values = interest.sample_values
+        let sample_values_bar = sample_values.slice(0, 10).reverse()
 
-// slicedData 
+        let otu_ids = interest.otu_ids;
+        let otu_ids_bar = otu_ids.slice(0, 10).map((otu_ids) => `OTU ${otu_ids}  `).reverse()  // inspiration from TA paveen
 
-// Sort the data by Greek search results descending
-// let sortedByGreekSearch = searchResults.sort((a, b) => b.greekSearchResults - a.greekSearchResults);
+        let labels = interest.otu_labels;
+        let labels_bar = labels.slice(0, 10).reverse()
+    
+                            // let raw_data_sorted = raw_data.sort(function sortFunction(a, b) {   // USE .FILTER INSTEAD...
+                            //     return b - a;
+                            //   });
 
-// Slice the first 10 objects for plotting
-// let slicedData = sortedByGreekSearch.slice(0, 10);
+                            // let raw_data_sliced = raw_data_sorted.slice(0, 10);  // this returned first 10 ids, not otu_ids...
+                            // let raw_data_sliced = raw_data_sorted.filter(raw_data_sorted => raw_data_sorted.sample_values.slice(0, 10));
 
-// Reverse the array to accommodate Plotly's defaults
-// slicedData.reverse();
+                                            // let xData = raw_data_sorted.map(function(x){
+                                            //     return x.sample_values
+                                            // });
+                                            // let yData = raw_data_sorted.map(function(y){
+                                            //     return y.otu_ids
+                                            // });
+                                            // let labels = raw_data_sorted.map(function(l){
+                                            //     return l.otu_labels
+                                            // });
+        let trace_bar = {
+            x: sample_values_bar,
+            y: otu_ids_bar,
+            type: "bar",
+            orientation: "h",
+            hovertext: labels_bar
+        };
 
-// Trace1 for the Greek Data
-// let trace1 = {
-//   x: slicedData.map(object => object.greekSearchResults),
-//   y: slicedData.map(object => object.greekName),
-//   text: slicedData.map(object => object.greekName),
-//   name: "Greek",
-//   type: "bar",
-//   orientation: "h"
-// };
+        let chart_display = [trace_bar];   
 
-// Data array
-// let data = [trace1];
+        Plotly.newPlot("bar", chart_display);
 
-// Apply a title to the layout
-// let layout = {
-//   title: "Popular Roman gods search results"
-// };
+        // bar_chart.html("")   // was not needed after all...
+        //     bar_chart
+        //         .append(trace_bar)   
+        
+        let bubble_chart = d3.select("#bubble");
 
-// Render the plot to the div tag with id "plot"
-// Plotly.newPlot("plot", data, layout);
+        let trace_bubble = {
+            x: otu_ids,
+            y: sample_values,
+            mode: 'markers',   // inspiration from chatGPT, all the way down to text
+            marker: {          // mode: markers is what makes it a bubble chart! size, color, and text are different lingo for doing the same thing...
+                size: sample_values,
+                color: otu_ids,
+            },
+            text: labels
+        };
 
+        bubble_display = [trace_bubble];
 
-// Render the plot to the div tag with id "plot"
-// Plotly.newPlot("plot", data, layout);
+        let layout = {
+            xaxis: {title: "OTU ID"}
+        };
+
+        Plotly.newPlot('bubble', bubble_display, layout);
+
+        });
+
+// console.log(raw_data);
+        // console.log(sample_values_final);
+        // console.log(otu_ids_final);
+        // console.log(labels_final);
+        // console.log(interest);
+    };
